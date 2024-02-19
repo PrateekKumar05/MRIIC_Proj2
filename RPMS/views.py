@@ -2,7 +2,14 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from .models import contact_info, UserProfile
 
+# from .forms import ProfileForm
+# from .models import Profile
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
 
 # Create your views here.
 def home(request):
@@ -49,3 +56,23 @@ def logoutuser(request):
     
 def aboutus(request):
     return render(request, 'RPMS/aboutus.html')
+
+def contact(request):
+    # return HttpResponse('<h1>this is the contact page</h1>')
+    if request.method == 'GET':
+        return render(request, 'RPMS/contact.html')
+    elif request.method == 'POST':
+        email = request.POST.get('user_email')
+        message = request.POST.get('message')
+        x = contact_info(u_email=email, u_message=message)
+        x.save()
+        print(email)
+        print(message)
+        return render(request,'RPMS/contact.html',{'feedback':'Your message has been recorded'})
+    
+def profile(request):
+    user = request.user
+    profile = UserProfile.objects.filter(user=user).first()  # Fetch user's profile data if it exists
+    
+    # Pass user and profile data to the template
+    return render(request, 'RPMS/profile.html', {'user': user, 'profile': profile})

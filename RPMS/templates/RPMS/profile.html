@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+</head>
+
+<body>
+    {% include 'RPMS/navbar.html'%}
+
+    <div>
+        <h1>User Profile</h1>
+        <p>Welcome, {{ user.username }}</p>
+        <!-- Display user profile information -->
+        <p><strong>Name:</strong> {{ user.UserProfile.name }}</p>
+        <p><strong>Department:</strong> {{ user.UserProfile.department }}</p>
+        <p><strong>Position:</strong> {{ user.UserProfile.position }}</p>
+        <p><strong>Education:</strong> {{ user.UserProfile.education }}</p>
+        <p><strong>Research Interests:</strong> {{ user.UserProfile.reszearch_interests }}</p>
+        <!-- <p><strong>Website:</strong> {{ user.userprofile.website }}</p>
+        <p><strong>GitHub:</strong> {{ user.userprofile.github }}</p>
+        <p><strong>LinkedIn:</strong> {{ user.userprofile.linkedin }}</p> -->
+        <!-- Add more details as needed -->
+    </div>
+
+    <!-- Research Projects Section -->
+    <div>
+        <h2>Research Projects</h2>
+        {% if user.profile.research_projects.all %}
+        <ul>
+            {% for project in user.profile.research_projects.all %}
+            <li>{{ project.title }} - {{ project.description }}</li>
+            <!-- Add more details about the research project as needed -->
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No research projects found.</p>
+        {% endif %}
+    </div>
+
+</body>
+
+</html>
