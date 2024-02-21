@@ -11,4 +11,8 @@ urlpatterns = [
     path('aboutus', views.aboutus, name='aboutus'),
     path('profile', views.profile, name='profile'),
     path('contact',views.contact,name='contact'),
+    # path('create/', views.profile_create, name='profile_create'),
+    # path('edit/', views.profile_edit, name='profile_edit'),
+    # path('list/', views.profile_list, name='profile_list'),
+    # path('<int:pk>/', views.profile_detail, name='profile_detail'),
 ]

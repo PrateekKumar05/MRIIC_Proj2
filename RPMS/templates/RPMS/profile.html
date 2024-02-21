@@ -1,45 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>User Profile - Research Profile Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Reset and base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        /* Container styles */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Profile section styles */
+        .profile h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .profile-details p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* Research projects section styles */
+        .research-projects h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .research-projects ul {
+            padding: 0;
+        }
+
+        .research-projects li {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .research-projects h3 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .research-projects p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* Footer styles */
+        .bottom {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .bottom a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .bottom a:hover {
+            color: #333;
+        }
+    </style>
 </head>
-
 <body>
-    {% include 'RPMS/navbar.html'%}
+    {% include 'RPMS/Navbar.html'%}
+    <div class="container">
+        <section class="profile">
+            <h1>User Profile</h1>
+            <div class="profile-details">
+                <p><strong>Name:</strong> {{ profile.name }}</p>
+                <p><strong>Department:</strong> {{ profile.department }}</p>
+                <p><strong>Position:</strong> {{ profile.position }}</p>
+                <p><strong>Education:</strong> {{ profile.education }}</p>
+                <p><strong>Research Interests:</strong> {{ profile.research_interests }}</p>
+            </div>
+        </section>
 
-    <div>
-        <h1>User Profile</h1>
-        <p>Welcome, {{ user.username }}</p>
-        <!-- Display user profile information -->
-        <p><strong>Name:</strong> {{ user.UserProfile.name }}</p>
-        <p><strong>Department:</strong> {{ user.UserProfile.department }}</p>
-        <p><strong>Position:</strong> {{ user.UserProfile.position }}</p>
-        <p><strong>Education:</strong> {{ user.UserProfile.education }}</p>
-        <p><strong>Research Interests:</strong> {{ user.UserProfile.reszearch_interests }}</p>
-        <!-- <p><strong>Website:</strong> {{ user.userprofile.website }}</p>
-        <p><strong>GitHub:</strong> {{ user.userprofile.github }}</p>
-        <p><strong>LinkedIn:</strong> {{ user.userprofile.linkedin }}</p> -->
-        <!-- Add more details as needed -->
+        <section class="research-projects">
+            <h2>Research Projects</h2>
+            {% if user.profile.research_projects.all %}
+            <ul>
+                {% for project in user.profile.research_projects.all %}
+                <li>
+                    <h3>{{ project.title }}</h3>
+                    <p>{{ project.description }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No research projects found.</p>
+            {% endif %}
+        </section>
     </div>
-
-    <!-- Research Projects Section -->
-    <div>
-        <h2>Research Projects</h2>
-        {% if user.profile.research_projects.all %}
-        <ul>
-            {% for project in user.profile.research_projects.all %}
-            <li>{{ project.title }} - {{ project.description }}</li>
-            <!-- Add more details about the research project as needed -->
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>No research projects found.</p>
-        {% endif %}
-    </div>
-
+    <footer class="bottom">
+        {% include 'RPMS/footer.html'%}
+    </footer> 
 </body>
-
 </html>

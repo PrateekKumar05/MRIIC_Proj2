@@ -37,6 +37,11 @@ def registration(request):
             a = request.POST.get('username')
             b = request.POST.get('password1')
             c = request.POST.get('password2')
+            d = request.POST.get('name')
+            e = request.POST.get('department')
+            f = request.POST.get('position')
+            g = request.POST.get('education')
+            h = request.POST.get('research_interests')
             if b==c:
                 #Check whether user name is unique
                 if (User.objects.filter(username = a)):
@@ -44,6 +49,8 @@ def registration(request):
                 else:
                     user = User.objects.create_user(username = a, password=b)
                     user.save()
+                    usrp = UserProfile(user=user,name=d,department=e,position=f,education=g,research_interests=h)
+                    usrp.save()
                     login(request,user)
                     return redirect('home')
             else:
@@ -72,7 +79,6 @@ def contact(request):
     
 def profile(request):
     user = request.user
-    profile = UserProfile.objects.filter(user=user).first()  # Fetch user's profile data if it exists
-    
+    profile = UserProfile.objects.get(user=user) # Fetch user's profile data if it exists
     # Pass user and profile data to the template
     return render(request, 'RPMS/profile.html', {'user': user, 'profile': profile})
