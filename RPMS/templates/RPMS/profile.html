@@ -106,19 +106,14 @@
 
         <section class="research-projects">
             <h2>Research Projects</h2>
-            {% if user.profile.research_projects.all %}
-            <ul>
-                {% for project in user.profile.research_projects.all %}
-                <li>
-                    <h3>{{ project.title }}</h3>
-                    <p>{{ project.description }}</p>
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p>No research projects found.</p>
-            {% endif %}
+            <button class="btn btn-primary" onclick="window.location.href='/upload/'">Upload Files</button>
         </section>
+        <h2 class="mt-3">Uploaded Files</h2>
+        <ul>
+            {% for file in uploaded_files %}
+                <li><a href="{{ file.file.url }}" target="_blank">{{ file.file.name }}</a></li>
+            {% endfor %}
+        </ul>
     </div>
     <footer class="bottom">
         {% include 'RPMS/footer.html'%}

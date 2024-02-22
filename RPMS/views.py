@@ -5,11 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .models import contact_info, UserProfile
-
-# from .forms import ProfileForm
-# from .models import Profile
-# from django.db.models.signals import post_save
-# from django.dispatch import receiver
+from .forms import FileUploadForm
+from .models import UploadedFile
 
 # Create your views here.
 def home(request):
@@ -81,4 +78,26 @@ def profile(request):
     user = request.user
     profile = UserProfile.objects.get(user=user) # Fetch user's profile data if it exists
     # Pass user and profile data to the template
-    return render(request, 'RPMS/profile.html', {'user': user, 'profile': profile})
+    print(request.user)  # Debug output
+    uploaded_files = UploadedFile.objects.filter(user=request.user)
+    print(uploaded_files)  # Debug output
+    return render(request, 'RPMS/profile.html', {'uploaded_files': uploaded_files, 'user': user, 'profile': profile})
+    # return render(request, 'RPMS/profile.html', {'user': user, 'profile': profile})
+
+
+@login_required
+def upload_file(request):
+    if request.method == 'POST':
+        form = FileUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_file = form.save(commit=False)
+            uploaded_file.user = request.user
+            uploaded_file.save()
+            return redirect('profile')
+    else:
+        form = FileUploadForm()
+    return render(request, 'RPMS/upload_file.html', {'form': form})
+
+
+
+
