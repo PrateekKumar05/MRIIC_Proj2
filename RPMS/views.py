@@ -39,6 +39,7 @@ def registration(request):
             f = request.POST.get('position')
             g = request.POST.get('education')
             h = request.POST.get('research_interests')
+            i = request.FILES['profile_photo']
             if b==c:
                 #Check whether user name is unique
                 if (User.objects.filter(username = a)):
@@ -46,7 +47,7 @@ def registration(request):
                 else:
                     user = User.objects.create_user(username = a, password=b)
                     user.save()
-                    usrp = UserProfile(user=user,name=d,department=e,position=f,education=g,research_interests=h)
+                    usrp = UserProfile(user=user,name=d,department=e,position=f,education=g,research_interests=h, profile_photo=i)
                     usrp.save()
                     login(request,user)
                     return redirect('home')
@@ -76,13 +77,9 @@ def contact(request):
     
 def profile(request):
     user = request.user
-    profile = UserProfile.objects.get(user=user) # Fetch user's profile data if it exists
-    # Pass user and profile data to the template
-    print(request.user)  # Debug output
+    profile = UserProfile.objects.get(user=user) 
     uploaded_files = UploadedFile.objects.filter(user=request.user)
-    print(uploaded_files)  # Debug output
     return render(request, 'RPMS/profile.html', {'uploaded_files': uploaded_files, 'user': user, 'profile': profile})
-    # return render(request, 'RPMS/profile.html', {'user': user, 'profile': profile})
 
 
 @login_required
