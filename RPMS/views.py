@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .models import contact_info, UserProfile
 from .forms import FileUploadForm
-from .models import UploadedFile
+from .models import UploadedFile     
 
 # Create your views here.
 def home(request):
