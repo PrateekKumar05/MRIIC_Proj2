@@ -6,7 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .models import contact_info, UserProfile
 from .forms import FileUploadForm
-from .models import UploadedFile     
+from .models import UploadedFile
+from django.http import JsonResponse
 
 # Create your views here.
 def home(request):
@@ -90,11 +91,29 @@ def upload_file(request):
             uploaded_file = form.save(commit=False)
             uploaded_file.user = request.user
             uploaded_file.save()
+            
+            # Increment user points
+            user_profile = UserProfile.objects.get_or_create(user=request.user)[0]
+            user_profile.points += 1
+            user_profile.save()
+            
             return redirect('profile')
     else:
         form = FileUploadForm()
     return render(request, 'RPMS/upload_file.html', {'form': form})
 
+def leaderboard(request):
+    user_profiles = UserProfile.objects.order_by('-points')
+    return render(request, 'RPMS/leaderboard.html', {'user_profiles': user_profiles})
 
+def chart_data(request):
+    points_range = [(0, 10), (11, 20), (21, 30)]  # Define points range
+    users_data = []
+    labels = []
 
+    for start, end in points_range:
+        users_count = UserProfile.objects.filter(points__range=(start, end)).count()
+        users_data.append(users_count)
+        labels.append(f"{start}-{end}")
 
+    return JsonResponse({'labels': labels, 'usersData': users_data})
