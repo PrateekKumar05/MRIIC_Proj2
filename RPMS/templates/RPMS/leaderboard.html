@@ -14,31 +14,43 @@
       list-style: none;
       padding: 0;
     }
+
     li {
       margin-bottom: 20px;
-      transition: transform 0.3s ease-in-out; /* Add animation */
+      transition: transform 0.3s ease-in-out;
+      /* Add animation */
     }
+
     li:hover {
-      transform: scale(1.05); /* Add hover effect */
+      transform: scale(1.05);
+      /* Add hover effect */
     }
+
     /* Adjust images within the body */
-    body img {
-      width: 80px; /* Increase size */
-      height: 80px; /* Increase size */
+    .info img {
+      width: 80px;
+      /* Increase size */
+      height: 80px;
+      /* Increase size */
       border-radius: 50%;
       object-fit: cover;
     }
+
     /* Adjust size and style of the heading */
     h1 {
       text-align: center;
       margin-top: 30px;
-      font-size: 36px; /* Increase font size */
+      font-size: 36px;
+      /* Increase font size */
       font-weight: bold;
     }
+
     /* Adjust size of the graph */
     #pointsChart {
-      width: 80%; /* Adjust as needed */
-      margin: 0 auto; /* Center the graph */
+      width: 80%;
+      /* Adjust as needed */
+      margin: 0 auto;
+      /* Center the graph */
     }
   </style>
 </head>
@@ -46,19 +58,21 @@
 <body>
   <!-- Navbar - left unchanged -->
   {% include 'RPMS/Navbar.html' %}
-  <h1>Leaderboard</h1>
-  <ul>
-    {% for user_profile in user_profiles %}
-        <li>
-            {% if user_profile.profile_photo %}
-            <img src="{{ user_profile.profile_photo.url }}" alt="Profile Photo">
-            {% endif %}
-            <span>{{ user_profile.user.username }}</span>
-            <span>Points: {{ user_profile.points }}</span>
-        </li>
-    {% endfor %}
-  </ul>
-  <canvas id="pointsChart"></canvas>
+  <div class="info">
+    <h1>Leaderboard</h1>
+    <ul>
+      {% for user_profile in user_profiles %}
+      <li>
+        {% if user_profile.profile_photo %}
+        <img src="{{ user_profile.profile_photo.url }}" alt="Profile Photo">
+        {% endif %}
+        <span>{{ user_profile.user.username }}</span>
+        <span>Points: {{ user_profile.points }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <canvas id="pointsChart"></canvas>
+  </div>
   <footer class="text-center">
     {% include 'RPMS/footer.html'%}
   </footer>
@@ -91,4 +105,5 @@
       });
     });
 </script>
+
 </html>

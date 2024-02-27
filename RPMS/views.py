@@ -5,9 +5,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .models import contact_info, UserProfile
-from .forms import FileUploadForm
+from .forms import FileUploadForm, UserProfileForm
 from .models import UploadedFile
 from django.http import JsonResponse
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+from .models import contact_info
+from django.http import Http404
+
 
 # Create your views here.
 def home(request):
@@ -75,15 +81,33 @@ def contact(request):
         print(email)
         print(message)
         return render(request,'RPMS/contact.html',{'feedback':'Your message has been recorded'})
-    
+
+@login_required(login_url='loginuser')   
 def profile(request):
     user = request.user
     profile = UserProfile.objects.get(user=user) 
     uploaded_files = UploadedFile.objects.filter(user=request.user)
     return render(request, 'RPMS/profile.html', {'uploaded_files': uploaded_files, 'user': user, 'profile': profile})
 
+@login_required(login_url='loginuser')
+def edit_profile(request):
+    user = request.user
+    profile = UserProfile.objects.get(user=user)
+    
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            # Loop through form fields and update profile fields accordingly
+            for field in form.cleaned_data:
+                setattr(profile, field, form.cleaned_data[field])
+            profile.save()
+            return redirect('profile')  # Redirect back to profile page
+    else:
+        form = UserProfileForm(instance=profile)
+    
+    return render(request, 'RPMS/edit_profile.html', {'form': form})
 
-@login_required
+@login_required(login_url='loginuser')
 def upload_file(request):
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
@@ -118,12 +142,6 @@ def chart_data(request):
 
     return JsonResponse({'labels': labels, 'usersData': users_data})
 
-def logistics(request):
-    if request.method == 'GET':
-        contact_information = contact_info.objects.all()
-        return render(request, 'RPMS/logistics.html', {'contact_information': contact_information})
-    else:
-        return render(request, 'RPMS/logistics.html')
     
 def download_contact_info(request):
     contact_information = contact_info.objects.all()
@@ -131,4 +149,35 @@ def download_contact_info(request):
     response = HttpResponse(content, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="contact_info.csv"'
     return response
+
+from django.http import Http404
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/')
+def logistics(request):
+    if request.method == 'GET':
+        contact_information = contact_info.objects.all()
+        return render(request, 'RPMS/logistics.html', {'contact_information': contact_information})
+    else:
+        raise Http404()
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/')
+def stats(request):
+    if request.method == 'GET':
+        contact_information = contact_info.objects.all()
+        return render(request, 'RPMS/stats.html', {'contact_information': contact_information})
+    else:
+        raise Http404()
+    
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/')
+def delete_message(request, message_id):
+    if request.method == 'DELETE':
+        try:
+            message = contact_info.objects.get(pk=message_id)
+            message.delete()
+            return JsonResponse({'message': 'Message deleted successfully'}, status=200)
+        except contact_info.DoesNotExist:
+            return JsonResponse({'error': 'Message not found'}, status=404)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
