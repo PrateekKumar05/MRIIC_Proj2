@@ -8,6 +8,7 @@ class UserProfile(models.Model):
     department = models.CharField(max_length=100, default=True)
     position = models.CharField(max_length=100, default=True)
     education = models.CharField(max_length=100, default=True)
+    email = models.EmailField(unique=True, default=True)
     research_interests = models.CharField(max_length=255, default=True)
     profile_photo = models.ImageField(upload_to='profile_photo/', blank=True, null=True)
     points = models.IntegerField(default=0)

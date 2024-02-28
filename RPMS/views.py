@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
@@ -13,6 +13,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
 from .models import contact_info
 from django.http import Http404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 
 # Create your views here.
@@ -47,6 +49,7 @@ def registration(request):
             g = request.POST.get('education')
             h = request.POST.get('research_interests')
             i = request.FILES['profile_photo']
+            j = request.POST.get('email')
             if b==c:
                 #Check whether user name is unique
                 if (User.objects.filter(username = a)):
@@ -54,7 +57,7 @@ def registration(request):
                 else:
                     user = User.objects.create_user(username = a, password=b)
                     user.save()
-                    usrp = UserProfile(user=user,name=d,department=e,position=f,education=g,research_interests=h, profile_photo=i)
+                    usrp = UserProfile(user=user,name=d,department=e,position=f,education=g,research_interests=h, profile_photo=i, email=j)
                     usrp.save()
                     login(request,user)
                     return redirect('home')
@@ -130,6 +133,7 @@ def leaderboard(request):
     user_profiles = UserProfile.objects.order_by('-points')
     return render(request, 'RPMS/leaderboard.html', {'user_profiles': user_profiles})
 
+
 def chart_data(request):
     points_range = [(0, 10), (11, 20), (21, 30)]  # Define points range
     users_data = []
@@ -137,10 +141,11 @@ def chart_data(request):
 
     for start, end in points_range:
         users_count = UserProfile.objects.filter(points__range=(start, end)).count()
-        users_data.append(users_count)
+        users_data.append(int(users_count))  # Cast to integer
         labels.append(f"{start}-{end}")
 
     return JsonResponse({'labels': labels, 'usersData': users_data})
+
 
     
 def download_contact_info(request):
@@ -149,8 +154,6 @@ def download_contact_info(request):
     response = HttpResponse(content, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="contact_info.csv"'
     return response
-
-from django.http import Http404
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/')
 def logistics(request):
@@ -181,3 +184,22 @@ def delete_message(request, message_id):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+def leaderboard(request):
+    user_profiles = UserProfile.objects.order_by('-points')
+    paginator = Paginator(user_profiles, 5)  # Show 5 user profiles per page
+
+    page_number = request.GET.get('page')
+    try:
+        user_profiles = paginator.page(page_number)
+    except PageNotAnInteger:
+        user_profiles = paginator.page(1)
+    except EmptyPage:
+        user_profiles = paginator.page(paginator.num_pages)
+
+    return render(request, 'RPMS/leaderboard.html', {'user_profiles': user_profiles})
+
+def user_profile(request, user_id):
+    y=get_object_or_404(User, pk=user_id)
+    z=get_object_or_404(UserProfile, user=y)
+    print(y)
+    return render(request, 'RPMS/user_profile.html', {"z":z})

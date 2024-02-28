@@ -31,4 +31,5 @@ urlpatterns = [
     path('stats/', stats, name='stats'),
     path('delete-message/<int:message_id>/', views.delete_message, name='delete_message'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
+    path('user_profile/<int:user_id>/', views.user_profile, name='user_profile'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
