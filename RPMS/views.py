@@ -12,7 +12,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
 from .models import contact_info
-from django.http import Http404
+from django.http import Http404, HttpResponseNotAllowed
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
@@ -129,13 +129,9 @@ def upload_file(request):
         form = FileUploadForm()
     return render(request, 'RPMS/upload_file.html', {'form': form})
 
-def leaderboard(request):
-    user_profiles = UserProfile.objects.order_by('-points')
-    return render(request, 'RPMS/leaderboard.html', {'user_profiles': user_profiles})
-
 
 def chart_data(request):
-    points_range = [(0, 10), (11, 20), (21, 30)]  # Define points range
+    points_range = [(0, 10), (11, 20), (21, 30), (31,40), (41,50)]  # Define points range
     users_data = []
     labels = []
 
@@ -160,14 +156,6 @@ def logistics(request):
     if request.method == 'GET':
         contact_information = contact_info.objects.all()
         return render(request, 'RPMS/logistics.html', {'contact_information': contact_information})
-    else:
-        raise Http404()
-
-@user_passes_test(lambda u: u.is_superuser, login_url='/')
-def stats(request):
-    if request.method == 'GET':
-        contact_information = contact_info.objects.all()
-        return render(request, 'RPMS/stats.html', {'contact_information': contact_information})
     else:
         raise Http404()
     
@@ -201,5 +189,39 @@ def leaderboard(request):
 def user_profile(request, user_id):
     y=get_object_or_404(User, pk=user_id)
     z=get_object_or_404(UserProfile, user=y)
-    print(y)
     return render(request, 'RPMS/user_profile.html', {"z":z})
+
+@login_required(login_url='loginuser')
+def delete_profile(request, user_id):
+    if request.method == 'POST':
+        # Fetch the user by ID
+        user = get_object_or_404(User, id=user_id)
+        
+        # Delete the user's profile and associated data
+        user.delete()
+        
+        # Redirect to the home page or any other page
+        return redirect('home')
+    else:
+        # Handle other request methods appropriately
+        # For example, return a 405 Method Not Allowed response
+        return HttpResponseNotAllowed(['POST'])
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/')
+def stats(request):
+    if request.method == 'GET':
+        # Fetch all users
+        all_users = User.objects.all()
+
+        # Create a list to store user statistics
+        user_stats = []
+        for user in all_users:
+            date_joined = user.date_joined.strftime('%Y-%m-%d %H:%M:%S')
+            last_login = user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else "Never"
+            user_stat = {'id': user.id, 'username': user.username, 'date_joined': date_joined, 'last_login': last_login}
+            user_stats.append(user_stat)
+
+        return render(request, 'RPMS/stats.html', {'user_stats': user_stats})
+    else:
+        raise Http404()
