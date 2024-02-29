@@ -12,7 +12,7 @@ from RPMS.views import leaderboard
 from RPMS.views import chart_data
 from RPMS.views import logistics
 from RPMS.views import download_contact_info
-from RPMS.views import stats, chart_data
+from RPMS.views import stats, chart_data, allprofiles
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
@@ -33,4 +33,5 @@ urlpatterns = [
     path('user_profile/<int:user_id>/', views.user_profile, name='user_profile'),
     path('delete_profile/<int:user_id>/', views.delete_profile, name='delete_profile'),
     path('chart_data',views.chart_data, name='chart_data'),
+    path('allprofiles/', views.allprofiles, name='allprofiles'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

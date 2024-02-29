@@ -187,12 +187,17 @@ def leaderboard(request):
     except EmptyPage:
         user_profiles = paginator.page(paginator.num_pages)
 
-    return render(request, 'RPMS/leaderboard.html', {'user_profiles': user_profiles})
+    # Calculate starting rank for each page
+    start_rank = (user_profiles.number - 1) * paginator.per_page + 1
+
+    return render(request, 'RPMS/leaderboard.html', {'user_profiles': user_profiles, 'start_rank': start_rank})
+
 
 def user_profile(request, user_id):
     y=get_object_or_404(User, pk=user_id)
     z=get_object_or_404(UserProfile, user=y)
-    return render(request, 'RPMS/user_profile.html', {"z":z})
+    uploaded_files = UploadedFile.objects.filter(user=z.user)
+    return render(request, 'RPMS/user_profile.html', {"z":z, 'uploaded_files': uploaded_files})
 
 @login_required(login_url='loginuser')
 def delete_profile(request, user_id):
@@ -281,3 +286,7 @@ def chart_data(request):
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
 
     return render(request, 'RPMS/charts.html', context={'plot_div': plot_div})
+
+def allprofiles(request):
+    user_profiles = UserProfile.objects.all()
+    return render(request, 'RPMS/allprofiles.html', {'user_profiles': user_profiles})
