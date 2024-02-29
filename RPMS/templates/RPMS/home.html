@@ -82,6 +82,43 @@
             height: 200px;
             object-fit: cover;
         }
+        /* CSS styles for the text section */
+        .text-section {
+    margin-top: 50px; /* Adjust spacing as needed */
+    padding: 20px;
+    background-color: #9cb3ca; /* Background color */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+}
+
+.text-section h2 {
+    color: #333; /* Heading color */
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.text-section p {
+    color: #666; /* Paragraph color */
+    font-size: 16px;
+    line-height: 1.6; /* Line height for readability */
+}
+
+/* CSS animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.text-section {
+    animation: fadeInUp 1s ease-in-out; /* Apply animation to the text section */
+}
+
     </style>
 
     <!-- Your original navbar HTML content here -->
@@ -101,31 +138,31 @@
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active" data-bs-interval="1000">
-                <img src="https://c4.wallpaperflare.com/wallpaper/148/392/948/1920x1080-px-books-interior-design-interiors-knowledge-library-shelves-anime-pokemon-hd-art-wallpaper-preview.jpg"
+                <img src="https://www.oneclearmessage.com/wp-content/uploads/2017/08/Knowledge-sharing.jpg"
                     class="d-block w-100" alt="...">
                 <div class="carousel-caption  d-md-block">
-                    <h5>Book Bliss: Discover, Delight, Devour – Your Next Literary Obsession Awaits!</h5>
+                    <h5>PeakScholar A Perfect Solution</h5>
                 </div>
             </div>
             <div class="carousel-item" data-bs-interval="2000">
-                <img src="https://cdn.pixabay.com/photo/2020/11/07/01/28/abstract-5719221_640.jpg" class="d-block w-100"
+                <img src="https://www.loginradius.com/wp-content/uploads/2019/08/profile-management-administer-customer-profiles-with-1.jpg" class="d-block w-100"
                     alt="...">
                 <div class="carousel-caption d-md-block">
-                    <h5>Beyond Words: Where Imagination Meets Page-Turning Brilliance</h5>
+                    <h5>Where Imagination Meets Collaboration</h5>
                 </div>
             </div>
             <div class="carousel-item" data-bs-interval="3000">
-                <img src="https://cdn.pixabay.com/photo/2017/03/05/21/43/mountains-2120004_640.jpg"
+                <img src="https://gazzconsulting.com/wp-content/uploads/2015/08/stockvault-the-social-network-people-networking176080.jpg"
                     class="d-block w-100" alt="...">
                 <div class="carousel-caption  d-md-block">
-                    <h5>Turn Pages, Turn Perspectives: Embrace the Power of Reading</h5>
+                    <h5>Saving Time In Managing Profiles</h5>
                 </div>
             </div>
             <div class="carousel-item " data-bs-interval="4000">
                 <img src="https://cdn.pixabay.com/photo/2016/02/06/09/56/science-1182713_1280.jpg"
                     class="d-block w-100 " alt="...">
                 <div class="carousel-caption  d-md-block">
-                    <h5>Bookworm Delight: Curated Picks to Spark Your Passion for Reading</h5>
+                    <h5>Vision and Solution</h5>
                 </div>
             </div>
         </div>
@@ -210,8 +247,18 @@
             </div>
         </div>
     </div>
+    <div class="text-section">
+        <h2>Welcome to Our Website</h2>
+        <p>Here, we offer a comprehensive solution tailored to the needs of scholars, researchers, and academic professionals. Our platform serves as your digital hub for organizing and showcasing your academic endeavors.
 
-
+            With our intuitive tools, you can effortlessly manage your profile, keeping track of publications, collaborations, and achievements. Connect with peers and collaborators worldwide, expanding your network and fostering new opportunities for collaboration.
+            
+            Explore a wealth of resources for research discovery, stay updated on the latest conferences and funding opportunities, and share your insights with the global research community.
+            
+            Take advantage of career development resources, access job postings, internships, and skill-building workshops to propel your career forward.
+            
+            Join our thriving community today and embark on a journey of academic excellence and collaboration!"</p>
+    </div>
     </div>
     <footer class="bottom">
         {% include 'RPMS/footer.html'%}

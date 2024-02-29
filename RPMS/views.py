@@ -14,6 +14,9 @@ from django.contrib.auth.decorators import user_passes_test
 from .models import contact_info
 from django.http import Http404, HttpResponseNotAllowed
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from plotly.offline import plot
+import plotly.graph_objs as go
+import numpy as np
 
 
 
@@ -130,7 +133,7 @@ def upload_file(request):
     return render(request, 'RPMS/upload_file.html', {'form': form})
 
 
-def chart_data(request):
+def charts(request):
     points_range = [(0, 10), (11, 20), (21, 30), (31,40), (41,50)]  # Define points range
     users_data = []
     labels = []
@@ -225,3 +228,56 @@ def stats(request):
         return render(request, 'RPMS/stats.html', {'user_stats': user_stats})
     else:
         raise Http404()
+    
+
+def chart_data(request):
+    x_values = np.linspace(0, 10, 100)  # Sample x values
+    y_values = np.sin(x_values)          # Sample y values
+
+    # Line Plot
+    line_plot = go.Scatter(
+        x=x_values,
+        y=y_values,
+        mode='lines',
+        name='Line Plot'
+    )
+
+    # Bar Chart
+    bar_chart = go.Bar(
+        x=['A', 'B', 'C', 'D'],
+        y=[10, 20, 15, 25],
+        name='Bar Chart'
+    )
+
+    # Scatter Plot
+    scatter_plot = go.Scatter(
+        x=np.random.rand(50),
+        y=np.random.rand(50),
+        mode='markers',
+        name='Scatter Plot'
+    )
+
+    # Pie Chart
+    labels = ['A', 'B', 'C', 'D']
+    values = [25, 35, 20, 20]
+    pie_chart = go.Pie(
+        labels=labels,
+        values=values,
+        name='Pie Chart'
+    )
+
+    # Create subplots
+    fig = go.Figure(data=[line_plot, bar_chart, scatter_plot, pie_chart])
+
+    # Update layout
+    fig.update_layout(
+        title='Plotly Charts Example',
+        xaxis=dict(title='X Axis'),
+        yaxis=dict(title='Y Axis'),
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+
+    # Generate HTML for the plots
+    plot_div = plot(fig, output_type='div', include_plotlyjs=False)
+
+    return render(request, 'RPMS/charts.html', context={'plot_div': plot_div})
